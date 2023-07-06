@@ -1,4 +1,4 @@
-# Woo-Maker
+# WooX Market Maker
 A simple A simple [WooX](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
 
 ## Requirements
