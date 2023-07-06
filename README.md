@@ -1,9 +1,9 @@
-# WooX Market Maker
-A simple A simple [WooX](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
+# Woo X Market Maker
+A simple A simple [Woo X](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
 
 ## Requirements
 - Python 3.7 or newer
-- An account with WooX with API keys available
+- An account with Woo X with API keys available
 
 ## Installation
 It's recommended to use a virtual environment (venv) for running this project to isolate the dependencies. 
