@@ -1,5 +1,5 @@
 # Woo X Market Maker
-A simple A simple [Woo X](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
+A simple [Woo X](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
 
 ## Requirements
 - Python 3.7 or newer
@@ -40,7 +40,7 @@ size_step = 0.01
 api_public_key = 'your_api_public_key'
 api_secret_key = 'your_api_secret_key'
 application_id = 'your_application_id'
-network = 'testnet'  # Choose 'testnet' for testing, 'mainnet' for real trading
+network = 'testnet'
 ```
 
 Remember to replace 'your_api_public_key', 'your_api_secret_key', and 'your_application_id' with your actual API public key, API secret key, and application ID from Woo X. For the network setting, choose 'testnet' for testing or 'mainnet' for real trading.
