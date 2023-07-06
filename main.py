@@ -24,8 +24,12 @@ class MarketMaker:
             self.price_updated.set()
 
     async def handle_single_order(self, side, size, i):
-        offset = (self.mid_price + i * self.step) * (self.offset_bps / 1e4)
-        price = round(self.mid_price - offset if side == 'bids' else self.mid_price + offset, 2)
+        step_size = (self.mid_price * self.step) / 1e4
+        offset = (self.offset_bps / 1e4) * self.mid_price
+        price = self.mid_price - offset if side == 'bids' else self.mid_price + offset
+        price = price + (i * step_size) if side == 'asks' else price - (
+                    i * step_size)
+        price = round(price, 2)
         if price:
             response = await self.client.place_order(self.symbol, side, price, size)
             symbol_parts = self.symbol.split('_')
