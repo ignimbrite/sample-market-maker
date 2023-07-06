@@ -2,18 +2,21 @@ import argparse
 import asyncio
 import logging
 import time
+import settings
 from woo_x import Client
 
 
 class MarketMaker:
-    def __init__(self, client, symbol, offset_bps, refresh_time_ms, step, grid_size):
+    def __init__(self, client):
         self.client = client
-        self.symbol = symbol
+        self.symbol = settings.symbol
         self.mid_price = None
-        self.offset_bps = offset_bps
-        self.refresh_time_ms = refresh_time_ms
-        self.step = step
-        self.grid_size = grid_size
+        self.offset_bps = settings.offset_bps
+        self.refresh_time_ms = settings.refresh_time_ms
+        self.step_bps = settings.step_bps
+        self.grid_size = settings.grid_size
+        self.base_size = settings.base_size
+        self.size_step = settings.size_step
         self.price_updated = asyncio.Event()
         self.logger = logging.getLogger('MarketMaker')
 
@@ -23,13 +26,15 @@ class MarketMaker:
                 self.mid_price = slam['mid_price']
             self.price_updated.set()
 
-    async def handle_single_order(self, side, size, i):
-        step_size = (self.mid_price * self.step) / 1e4
+    async def handle_single_order(self, side, i):
+        size = self.base_size + (i * self.size_step)
+        step_bps_size = (self.mid_price * self.step_bps) / 1e4
         offset = (self.offset_bps / 1e4) * self.mid_price
         price = self.mid_price - offset if side == 'bids' else self.mid_price + offset
-        price = price + (i * step_size) if side == 'asks' else price - (
-                    i * step_size)
+        price = price + (i * step_bps_size) if side == 'asks' else price - (
+                i * step_bps_size)
         price = round(price, 2)
+        size = round(size, 8)
         if price:
             response = await self.client.place_order(self.symbol, side, price, size)
             symbol_parts = self.symbol.split('_')
@@ -37,11 +42,11 @@ class MarketMaker:
             self.logger.info(formatted_response)
             time.sleep(0.3)  # Delay to avoid rate limit
 
-    async def place_order(self, side, size):
+    async def place_order(self, side):
         await self.price_updated.wait()
         if self.mid_price is not None:
             for i in range(self.grid_size):
-                await self.handle_single_order(side, size, i)
+                await self.handle_single_order(side, i)
             self.price_updated.set()
 
     async def cancel_all_orders(self):
@@ -54,8 +59,8 @@ class MarketMaker:
     async def handle_orders(self):
         while True:
             await self.cancel_all_orders()
-            await self.place_order('bids', 0.01)
-            await self.place_order('asks', 0.01)
+            await self.place_order('bids')
+            await self.place_order('asks')
             self.logger.info(f"Orders placed, sleeping for {self.refresh_time_ms / 1e3} seconds.")
             position = await self.client.position(self.symbol)
             self.logger.info(f"Current position for {self.symbol}: {position}")
@@ -67,28 +72,22 @@ class MarketMaker:
         await asyncio.gather(update_task, handle_orders_task)
 
 
-async def main(symbol, offset_bps, refresh_time_ms, step, grid_size):
+async def main():
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
     async with Client(
-            api_public_key='j8Y+6YCHDUwYYePMvq1eOg==',
-            api_secret_key='ORSVONLEMB6IHCRKAG4N4HRWYXBU',
-            application_id='194c85b6-8114-465c-829c-9fca81e40bf4',
-            network='testnet',
+            api_public_key=settings.api_public_key,
+            api_secret_key=settings.api_secret_key,
+            application_id=settings.application_id,
+            network=settings.network,
     ) as client:
-        executor = MarketMaker(client, symbol, offset_bps, refresh_time_ms, step, grid_size)
+        executor = MarketMaker(client)
         await executor.run()
 
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Market Maker bot")
-    parser.add_argument('--symbol', type=str, help='Symbol to operate on', required=True)
-    parser.add_argument('--offset', type=float, help='Offset in basis points', required=True)
-    parser.add_argument('--refresh_time', type=int, help='Refresh time in milliseconds', required=True)
-    parser.add_argument('--step', type=float, help='Step size for grid orders', required=True)
-    parser.add_argument('--grid_size', type=int, help='Number of grid orders', required=True)
-    args = parser.parse_args()
-    asyncio.run(main(args.symbol, args.offset, args.refresh_time, args.step, args.grid_size))
+    asyncio.run(main())

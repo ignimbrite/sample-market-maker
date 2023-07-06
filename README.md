@@ -6,36 +6,41 @@ A simple A simple [Woo X](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Mak
 - An account with Woo X with API keys available
 
 ## Installation
-It's recommended to use a virtual environment (venv) for running this project to isolate the dependencies. 
+It's recommended to use a virtual environment (venv) for running this project to isolate the dependencies.
 
 Clone this repository and navigate into the project directory, then install the necessary libraries:
 
 ```bash
-git clone https://github.com/username/woo-maker.git
+git clone https://github.com/mattmgls/woo-maker.git
 cd woo-maker
 pip install -r requirements.txt
 ```
-Replace 'username' with your actual GitHub username.
 
 ## Usage
-To use the bot, you need to provide it with the offset and refresh time parameters as command line arguments when running the script. Offset is provided in basis points and refresh time in milliseconds.
-
-Run the bot with the following command:
+To use the bot, simply run the main script:
 
 ```bash
-python main.py --offset [offset_bps] --refresh [refresh_time_ms]
-
+python main.py
 ```
-For example, to run the bot with an offset of 3 basis points and a refresh time of 5000 milliseconds (or 5 seconds), you would use:
 
-```bash
-python main.py --offset 3 --refresh 5000
-```
+Parameters like offset, refresh time, base size, size step, grid size, grid step, API keys, and network are configured in the settings.py file.
 ## Configuration
-You need to provide the bot with your API keys. Open the main.py file and replace the placeholders in the following lines with your actual API public key, API secret key, and application ID:
+Configuration parameters are found in settings.py.
 
+Modify the parameters as per your requirements:
 ```python
-api_public_key=''
-api_secret_key=''
-application_id=''
+symbol = "PERP_BTC_USDT"
+offset_bps = 100
+refresh_time_ms = 30000
+step_bps = 100
+grid_size = 5
+base_size = 0.01
+size_step = 0.01
+
+api_public_key = 'your_api_public_key'
+api_secret_key = 'your_api_secret_key'
+application_id = 'your_application_id'
+network = 'testnet'  # Choose 'testnet' for testing, 'mainnet' for real trading
 ```
+
+Remember to replace 'your_api_public_key', 'your_api_secret_key', and 'your_application_id' with your actual API public key, API secret key, and application ID from Woo X. For the network setting, choose 'testnet' for testing or 'mainnet' for real trading.
