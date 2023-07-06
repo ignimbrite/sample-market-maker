@@ -1,5 +1,5 @@
 # Woo-Maker
-A simple WooX Market Making Bot for handling and managing cryptocurrency orders. This bot helps place bid and ask orders on the basis of pre-defined offset and refresh intervals.
+A simple A simple [WooX](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
 
 ## Requirements
 - Python 3.7 or newer
