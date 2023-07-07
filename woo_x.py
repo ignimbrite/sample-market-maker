@@ -257,28 +257,3 @@ class Client():
             return content['holding']
         else:
             return content
-
-
-
-async def main():
-    logging.basicConfig(
-        level=logging.ERROR
-    )
-
-    async with Client(
-        api_public_key='j8Y+6YCHDUwYYePMvq1eOg==',
-        api_secret_key='ORSVONLEMB6IHCRKAG4N4HRWYXBU',
-        application_id='194c85b6-8114-465c-829c-9fca81e40bf4',
-        network='testnet',
-    ) as client:
-        response = await client.place_order('PERP_BTC_USDT', 'bids', 25000.0, 0.01)
-        print(response)
-
-        async for message in client.slams([symbol['raw_name'] for symbol in await client.symbols() if symbol['category'] == 'perpetuals']):
-            print(message)
-
-
-
-if __name__ == '__main__':
-    asyncio.run(main())
-
