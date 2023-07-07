@@ -12,12 +12,13 @@ class MarketMaker:
         self.symbol = settings.symbol
         self.mid_price = None
         self.offset_bps = settings.offset_bps
-        self.refresh_time_ms = settings.refresh_time_ms
+        self.refresh_time = settings.refresh_time
         self.step_bps = settings.step_bps
         self.grid_size = settings.grid_size
         self.base_size = settings.base_size
         self.size_step = settings.size_step
         self.price_updated = asyncio.Event()
+        self.timeout = settings.timeout
         self.logger = logging.getLogger('MarketMaker')
 
     async def update_best_prices(self):
@@ -40,7 +41,7 @@ class MarketMaker:
             symbol_parts = self.symbol.split('_')
             formatted_response = "Placed order for {:.2f} {} @ {:.2f}".format(size, symbol_parts[1], price)
             self.logger.info(formatted_response)
-            time.sleep(0.3)  # Delay to avoid rate limit
+            time.sleep(self.timeout)  # Delay to avoid rate limit
 
     async def place_order(self, side):
         await self.price_updated.wait()
@@ -61,15 +62,22 @@ class MarketMaker:
             await self.cancel_all_orders()
             await self.place_order('bids')
             await self.place_order('asks')
-            self.logger.info(f"Orders placed, sleeping for {self.refresh_time_ms / 1e3} seconds.")
+            self.logger.info(f"Orders placed, sleeping for {self.refresh_time} seconds.")
             position = await self.client.position(self.symbol)
             self.logger.info(f"Current position for {self.symbol}: {position}")
-            await asyncio.sleep(self.refresh_time_ms / 1e3)
+            await asyncio.sleep(self.refresh_time)
+
+    async def monitor_fills(self):
+        async for fill in self.client.fills():
+            # self.logger.info(f"Order filled: {fill}")
+            if 'tradeId' in fill:
+                self.logger.info(f"Order filled: {fill}")
 
     async def run(self):
         update_task = asyncio.create_task(self.update_best_prices())
         handle_orders_task = asyncio.create_task(self.handle_orders())
-        await asyncio.gather(update_task, handle_orders_task)
+        monitor_fills_task = asyncio.create_task(self.monitor_fills())
+        await asyncio.gather(update_task, handle_orders_task, monitor_fills_task)
 
 
 async def main():

@@ -1,4 +1,4 @@
-# Woo X Market Maker
+# Woo X Market Maker Sample
 A simple [Woo X](https://referral.woo.org/K5kBYJR7aFcQSU2c7) Market Making Bot for handling and managing orders.
 
 ## Requirements
@@ -31,7 +31,7 @@ Modify the parameters as per your requirements:
 ```python
 symbol = "PERP_BTC_USDT"
 offset_bps = 100
-refresh_time_ms = 30000
+refresh_time = 30000
 step_bps = 100
 grid_size = 5
 base_size = 0.01
