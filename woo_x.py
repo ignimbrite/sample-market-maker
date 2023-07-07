@@ -71,10 +71,10 @@ class Client():
             lambda: (
                 self._subclient.send_order(
                     symbol=symbol,
-                    order_type='LIMIT',
+                    order_type='POST_ONLY',
                     side={'bids': 'BUY', 'asks': 'SELL'}[side],
                     order_price=price,
-                    order_quantity=size
+                    order_quantity=size,
                 )
             )
         )
