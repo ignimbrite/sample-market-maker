@@ -24,13 +24,13 @@ size_step = 0.02
 timeout = 0
 
 # Your API public key from Woo X
-api_public_key = 'j8Y+6YCHDUwYYePMvq1eOg=='
+api_public_key = 'your_api_public_key'
 
 # Your API secret key from Woo X
-api_secret_key = 'ORSVONLEMB6IHCRKAG4N4HRWYXBU'
+api_secret_key = 'your_api_secret_key'
 
 # Your application ID from Woo X
-application_id = '194c85b6-8114-465c-829c-9fca81e40bf4'
+application_id = 'your_application_id'
 
 # The network you want to connect to. Choose 'testnet' for testing or 'mainnet' for real trading
 network = 'testnet'
