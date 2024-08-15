@@ -11,7 +11,7 @@ It's recommended to use a virtual environment (venv) for running this project to
 Clone this repository and navigate into the project directory, then install the necessary libraries:
 
 ```bash
-git clone git@github.com:mattmgls/sample-market-maker.git
+git clone git@github.com:ignimbrite/sample-market-maker.git
 cd sample-market-maker
 pip install -r requirements.txt
 ```
